@@ -50,7 +50,7 @@ void incluirProfesor(){
 	scanf("%d", &cedula);
 	while(getchar()!='\n');
 	
-	printf("Digite el nombre del profesor: ");
+	printf("Digite el nombre del profesor: \n");
 	//scanf("%s", &nombre);
 	fgets(nombre,30,stdin);
 	nombre[strlen(nombre)-1] = '\0';
@@ -62,6 +62,7 @@ void incluirProfesor(){
         menuOperativo();
 		//exit(1);
 	}
+	printf("El profesor fue incluido con exito");
 	menuOperativo();
 }
 
@@ -71,6 +72,7 @@ void borrarTodo(){
 		fprintf(stderr, "%s\n", mysql_error(conn));
 		exit(1);
 	}
+	printf("Los profesores fueron borrados con exito");
 }
 
 void listarCursos(){
@@ -125,6 +127,7 @@ void incluirCursos(){
         menuOperativo();
 		//exit(1);
 	}
+	printf("El curso fue agregado al periodo indicado");
 	menuOperativo();
 }
 void listarCursosPeriodo(){
@@ -136,3 +139,30 @@ void listarCursosPeriodo(){
 		printf("\t%s\t%s\t%s\t%s\t%s\t%s\n", row[0],row[1],row[2],row[3],row[4],row[5]); /* la variable row se convierte en un arreglo por el numero de campos que hay en la tabla */
 	menuOperativo();
 }	
+void borrarCursoPeriodo(){
+	int codigoCurso;
+	int year; 
+    int periodo;
+    int grupo;
+	char query[500]= {0};
+	printf("Digite el codigo del curso: ");
+	scanf("%d", &codigoCurso);
+	while(getchar()!='\n');
+	printf("Digite el anio: ");
+	scanf("%d", &year);
+	while(getchar()!='\n');
+	printf("Digite el periodo: ");
+	scanf("%d", &periodo);
+	while(getchar()!='\n');
+	printf("Digite el grupo: ");
+	scanf("%d", &grupo);
+	while(getchar()!='\n');
+	snprintf(query,500,"DELETE FROM Cursos_por_Periodo WHERE Codigo_Curso = \'%d\' AND Periodo = \'%d\' AND Anio = \'%d\' AND Grupo = \'%d\'", codigoCurso, periodo,year,grupo);
+	if (mysql_query(conn, query));
+	{ /* definicion de la consulta y el origen de la conexion */
+		fprintf(stderr, "%s\n", mysql_error(conn));
+		menuOperativo();
+		//exit(1);
+	}
+	printf("El curso fue eliminado del periodo indicado");
+}
