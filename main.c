@@ -28,6 +28,8 @@ void menuOperativo(){
         menuProfesor();
     }else if(opcion == 3){
 		listarCursos();
+	}else if(opcion == 4){
+		menuCursoPeriodo();
 	}
 }
 
@@ -43,6 +45,21 @@ void menuProfesor(){
 		incluirProfesor();
 	}else if(opcion == 3){
 		borrarTodo();
+	}
+}
+
+void menuCursoPeriodo(){
+    int opcion = 0;
+    printf("\n\n\t****Sistema de administracion de aulas**\n\t\t  Menu de Opciones de Cursos por Periodo");
+    printf("\n\t(Debe ingresar un numero valido en el menu)\n\t1. Incluir Curso\n\t2. Mostrar Informacion de Cursos\n\t3. Borrar Curso\n\tIndique a que opcion desean ingresar: ");
+    scanf("%i",&opcion);
+	while(getchar()!='\n');
+    if (opcion == 2){
+        listarCursosPeriodo();
+    }else if(opcion == 1){
+		incluirCursos();
+	}else if(opcion == 3){
+		
 	}
 }
 

@@ -81,4 +81,58 @@ void listarCursos(){
 	while ((row = mysql_fetch_row(res)) != NULL) /* recorrer la variable res con todos los registros obtenidos para su uso */
 		printf("\t%s\t%s\t%s\n", row[0],row[1],row[2]); /* la variable row se convierte en un arreglo por el numero de campos que hay en la tabla */
 	menuOperativo();
+}
+void incluirCursos(){
+	int codigoCurso;
+	int year; 
+    int periodo;
+    int grupo;
+    int cedulaProfe;
+    int cantEstudiante;
+	char query[500]= {0};
+	printf("Digite el codigo del curso: ");
+	scanf("%d", &codigoCurso);
+	while(getchar()!='\n');
+	printf("Digite el anio: ");
+	scanf("%d", &year);
+	while(getchar()!='\n');
+    if(year > 2035 || year < 1974){
+        printf("EL anio debe ser mayor a 1974 o menor a 2035");
+        incluirCursos();
+    }
+    printf("Digite el periodo: ");
+	scanf("%d", &periodo);
+	while(getchar()!='\n');
+    if(periodo == 1 || periodo == 2){
+        printf("Digite el grupo: ");
+	    scanf("%d", &grupo);
+	    while(getchar()!='\n');
+        printf("Digite la cedula del profesor: ");
+	    scanf("%d", &cedulaProfe);
+	    while(getchar()!='\n');
+        printf("Digite la cantidad de estudiantes: ");
+	    scanf("%d", &cantEstudiante);
+	    while(getchar()!='\n');
+    }else{
+        printf("El periodo indicado es invalido \n");
+        incluirCursos();
+    }
+	/* enviar consulta SQL */
+	snprintf(query,500,"INSERT INTO Cursos_por_Periodo(Codigo_Curso,Periodo,Anio,Grupo,Cedula_Profesor,Cantidad_Estudiantes) VALUES (\'%d\',\'%d\',\'%d\',\'%d\',\'%d\',\'%d\')", codigoCurso, periodo,year,grupo,cedulaProfe,cantEstudiante);
+	/* definicion de la consulta y el origen de la conexion */
+	if(mysql_query(conn, query)){
+		fprintf(stderr, "%s\n", mysql_error(conn));
+        menuOperativo();
+		//exit(1);
+	}
+	menuOperativo();
+}
+void listarCursosPeriodo(){
+	/* enviar consulta SQL */
+	mysql_query(conn, "select * from Cursos_por_Periodo");
+	res = mysql_use_result(conn);
+	printf("\tCodigoCurso\tPeriodo\tAnio\tGrupo\tCedulaProfesor\tCantidadEstudiantes\n");
+	while ((row = mysql_fetch_row(res)) != NULL) /* recorrer la variable res con todos los registros obtenidos para su uso */
+		printf("\t%s\t%s\t%s\t%s\t%s\t%s\n", row[0],row[1],row[2],row[3],row[4],row[5]); /* la variable row se convierte en un arreglo por el numero de campos que hay en la tabla */
+	menuOperativo();
 }	
