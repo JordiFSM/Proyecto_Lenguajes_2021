@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <mysql.h> 
+#include <string.h>
 
 /* libreria que nos permite hacer el uso de las conexiones y consultas con MySQL */
 MYSQL *conn; /* variable de conexión para MySQL */
@@ -166,3 +167,48 @@ void borrarCursoPeriodo(){
 	}
 	printf("El curso fue eliminado del periodo indicado");
 }
+
+void agregarAulas(){
+	FILE *archivo;
+	char buffer[500];
+	char *aula;
+	char query[500];
+	char *canESt;
+	int bandera = 0;
+	archivo = fopen("./Aulas.txt", "r");
+	if(archivo == NULL) { 
+		printf("No se pudo abrir el archivo... \n"); 
+		menuOperativo(); 
+	}
+	while (fgets(buffer,500, archivo)){
+        // Aquí, justo ahora, tenemos ya la línea. Le vamos a remover el salto
+        strtok(buffer, "\n");
+    	char *token = strtok(buffer, ",");
+    	if(token != NULL){
+        	while(token != NULL){
+            // Sólo en la primera pasamos la cadena; en las siguientes pasamos NULL
+			if (bandera == 0){
+				aula = (char*)malloc(100);
+				aula = token;
+				bandera += 1;
+			}else if(bandera == 1){
+				canESt = (char*)malloc(100);
+				canESt = token;
+				bandera += 1;
+			}
+            printf("Token: %s\n", token);
+            token = strtok(NULL, ",");
+        	}
+			snprintf(query,500,"INSERT INTO Aulas(Nombre_Aula,Capacidad) VALUES (\'%s\',\'%s\')", aula, canESt);
+			/* definicion de la consulta y el origen de la conexion */
+			if(mysql_query(conn, query)){
+				fprintf(stderr, "%s\n", mysql_error(conn));
+        		//menuOperativo();
+				//exit(1);
+			}	
+		}
+
+    }
+	printf("Se agregaron las aulas que no estan repetidas y las que cumplen el formato");
+}
+
