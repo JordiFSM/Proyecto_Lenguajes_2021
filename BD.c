@@ -175,6 +175,7 @@ void agregarAulas(){
 	char query[500];
 	char *canESt;
 	int bandera = 0;
+	int banderaError = 0;
 	archivo = fopen("./Aulas.txt", "r");
 	if(archivo == NULL) { 
 		printf("No se pudo abrir el archivo... \n"); 
@@ -183,32 +184,79 @@ void agregarAulas(){
 	while (fgets(buffer,500, archivo)){
         // Aquí, justo ahora, tenemos ya la línea. Le vamos a remover el salto
         strtok(buffer, "\n");
-    	char *token = strtok(buffer, ",");
+		char *token = (char*)malloc(10);
+    	token = strtok(buffer, ",");
     	if(token != NULL){
         	while(token != NULL){
-            // Sólo en la primera pasamos la cadena; en las siguientes pasamos NULL
-			if (bandera == 0){
-				aula = (char*)malloc(100);
-				aula = token;
-				bandera += 1;
-			}else if(bandera == 1){
-				canESt = (char*)malloc(100);
-				canESt = token;
-				bandera += 1;
-			}
-            printf("Token: %s\n", token);
-            token = strtok(NULL, ",");
+            	// Sólo en la primera pasamos la cadena; en las siguientes pasamos NULL
+				if (bandera == 0){
+					aula = (char*)malloc(3);
+					aula = token;
+					if (strlen(aula) > 3){
+						printf("Nombre del aula supera el limite de caracteres");
+						banderaError =3;
+						break;
+					}else{
+						printf("Token: %s\n", aula);
+						if (isalpha(aula[0])){
+							printf("SI es letra");
+							int cont = 1;
+							int largo = strlen(aula)-1;
+							while (cont <= largo){
+								if(isdigit(aula[cont])){
+									printf("SI es NUmero");
+									cont+=1;
+								}else{
+									printf("NO es numero");
+									printf("EL nombre del aula: %s no cumple el formato \n",aula);
+									printf("Se seguiran insertando las aulas si el formato es correcto\n");
+									break;
+								}
+							}
+						}
+						bandera += 1;
+					}	
+				}else if(bandera == 1){
+					canESt = (char*)malloc(3);
+					canESt = token;
+					if (strlen(canESt) > 3){
+						printf("La cantidad de estudiantes excede la maxima capacidad del aula \n");
+						banderaError= 3;
+						break;
+					}else{
+						int cont = 0;
+						int largo = strlen(canESt)-1;
+						while (cont <= largo){
+							if(isdigit(canESt[cont])){
+								printf("SI");
+								cont+=1;
+							}else{
+								printf("NO");
+								printf("La capacidad indicada %s no cumple la capacidad maxima del aula \n",canESt);
+								printf("Se seguiran insertando las aulas si el formato es correcto\n");
+								break;
+							}
+						}
+					}
+				}
+           	 	//printf("Token: %s\n", token);
+            	token = strtok(NULL, ",");
         	}
-			snprintf(query,500,"INSERT INTO Aulas(Nombre_Aula,Capacidad) VALUES (\'%s\',\'%s\')", aula, canESt);
-			/* definicion de la consulta y el origen de la conexion */
-			if(mysql_query(conn, query)){
-				fprintf(stderr, "%s\n", mysql_error(conn));
-        		//menuOperativo();
-				//exit(1);
-			}	
+			bandera = 0;
+			if(banderaError != 3){
+				snprintf(query,500,"INSERT INTO Aulas(Nombre_Aula,Capacidad) VALUES (\'%s\',\'%s\')", aula, canESt);
+				/* definicion de la consulta y el origen de la conexion */
+				if(mysql_query(conn, query)){
+					fprintf(stderr, "%s\n", mysql_error(conn));
+        			//menuOperativo();
+					//exit(1);
+				}
+			}
+			banderaError = 0;	
 		}
 
     }
 	printf("Se agregaron las aulas que no estan repetidas y las que cumplen el formato");
+	fclose(archivo);
 }
 
