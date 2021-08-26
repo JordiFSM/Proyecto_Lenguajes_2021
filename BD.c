@@ -261,6 +261,8 @@ void agregarAulas(){
 }
 
 void reservarAulas(){
+	int codActual = maxReservaciones();
+	mysql_free_result(res);
 	int capacidadAula;
 	int capacidadCurso;
 	char query[1000]= {0};
@@ -319,6 +321,10 @@ void reservarAulas(){
 		printf("Los minutos indicados son invalidos\n");
 		reservarAulas();
 	}
+	if(horaInicio >= horaFin){
+		printf("Las horas indicadas son invalidas\n");
+		reservarAulas();
+	}
 	printf("Digite el nombre del aula:");
 	scanf("%s",&nombreAula);
 	
@@ -362,10 +368,69 @@ void reservarAulas(){
 		/* definicion de la consulta y el origen de la conexion */
 		if(mysql_query(conn, query)){
 			fprintf(stderr, "%s\n", mysql_error(conn));
-			printf("Toy malito we");
         	reservarAulas();
 		}
+		printf("El codigo de su reservacion es: %d \n",codActual+1);
+		codActual ++;
+	}else{
+		int cupos = capacidadCurso - capacidadAula;
+		snprintf(query,1000,"INSERT INTO Reservacion_de_Aulas(Codigo_Reservacion,Fecha,Hora_Inicio,Hora_Fin,Codigo_Curso,Periodo,Año,Grupo,Nombre_Aula) VALUES (NULL,\'%d/%d/%d\',\'%d:%d:00\',\'%d:%d:00\',\'%d\',\'%d\',\'%d\',\'%d\',\'%s\')",year,mes,dia,horaInicio,minutosInicio,horaFin,minutosFin,codigoCurso,periodo,year,grupo,nombreAula);
+		/* definicion de la consulta y el origen de la conexion */
+		if(mysql_query(conn, query)){
+			fprintf(stderr, "%s\n", mysql_error(conn));
+        	reservarAulas();
+		}
+		printf("El codigo de su reservacion es: %d \n",codActual+1);
+		codActual ++;
+		while(cupos > 0){
+			char nombreAula[3];
+			printf("\nSe necesita un aula mas porque la cantidad de estudiantes supera el limite del aula \n");
+			printf("Digite el nombre del aula:");
+			scanf("%s",&nombreAula);
+			int capacidad;
+			snprintf(query,1000,"SELECT Capacidad from Aulas WHERE Nombre_Aula = \'%s\'", nombreAula);
+			if(mysql_query(conn,query)){
+				fprintf(stderr, "%s\n", mysql_error(conn));
+				printf("AUla no encontrada \n");
+			}else{
+				res = mysql_use_result(conn);
+				row = mysql_fetch_row(res);
+				capacidad = atoi(row[0]);
+				mysql_free_result(res);
+
+				snprintf(query,1000,"INSERT INTO Reservacion_de_Aulas(Codigo_Reservacion,Fecha,Hora_Inicio,Hora_Fin,Codigo_Curso,Periodo,Año,Grupo,Nombre_Aula) VALUES (NULL,\'%d/%d/%d\',\'%d:%d:00\',\'%d:%d:00\',\'%d\',\'%d\',\'%d\',\'%d\',\'%s\')",year,mes,dia,horaInicio,minutosInicio,horaFin,minutosFin,codigoCurso,periodo,year,grupo,nombreAula);
+				/* definicion de la consulta y el origen de la conexion */
+				if(mysql_query(conn, query)){
+					fprintf(stderr, "%s\n", mysql_error(conn));
+				}else{
+					cupos = cupos - capacidad;
+					printf("El codigo de su reservacion es: %d\n",codActual+1);
+					codActual ++;
+				}
+				
+			}
+			
+		}
+		menuOperativo();
 	}
-	printf("no etro");
 }
+
+int maxReservaciones(){
+	char query[500]= {0};
+	snprintf(query,500,"SELECT MAX(Codigo_Reservacion) from Reservacion_de_Aulas");
+	if(mysql_query(conn, query)){
+		fprintf(stderr, "%s\n", mysql_error(conn));
+		return 0;
+	}else{
+		res = mysql_use_result(conn);
+		row = mysql_fetch_row(res);
+		if(row[0] == NULL){
+			return 0;
+		}
+		printf("%d",atoi(row[0]));
+		return atoi(row[0]);
+	}
+}
+
+
 
