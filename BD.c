@@ -99,8 +99,8 @@ void incluirCursos(){
 	printf("Digite el anio: ");
 	scanf("%d", &year);
 	while(getchar()!='\n');
-    if(year > 2035 || year < 1974){
-        printf("EL anio debe ser mayor a 1974 o menor a 2035");
+    if(year > 2035 || year < 2021){
+        printf("EL anio debe ser mayor o igual a 2021 o menor a 2035");
         incluirCursos();
     }
     printf("Digite el periodo: ");
@@ -244,7 +244,7 @@ void agregarAulas(){
         	}
 			bandera = 0;
 			if(banderaError != 3){
-				snprintf(query,500,"INSERT INTO Aulas(Nombre_Aula,Capacidad) VALUES (\'%s\',\'%s\')", aula, canESt);
+				snprintf(query,500,"INSERT INTO Aulas(Nombre_Aula,Capacidad) VALUES (\'%s\',\'%d\')", aula, atoi(canESt));
 				/* definicion de la consulta y el origen de la conexion */
 				if(mysql_query(conn, query)){
 					fprintf(stderr, "%s\n", mysql_error(conn));
@@ -258,5 +258,114 @@ void agregarAulas(){
     }
 	printf("Se agregaron las aulas que no estan repetidas y las que cumplen el formato");
 	fclose(archivo);
+}
+
+void reservarAulas(){
+	int capacidadAula;
+	int capacidadCurso;
+	char query[1000]= {0};
+	char query2[1000] = {0};
+	int dia;
+	int mes;
+	int year;
+	int horaInicio;
+	int minutosInicio;
+	int horaFin;
+	int minutosFin;
+	char nombreAula[3];
+	int periodo;
+	int codigoCurso;
+	int grupo;
+
+	printf("Digite el dia para la reservacion: ");
+	scanf("%d",&dia);
+	if (dia > 31 || dia < 0){
+		printf("El dia indicado es incorrecto \n");
+		reservarAulas();
+	}
+	printf("Digite el mes para la reservacion\n: ");
+	scanf("%d",&mes);
+	if (mes > 12 || mes < 1){
+		printf("El mes indicado es incorrecto\n");
+		reservarAulas();
+	}
+	printf("Digite el anio para la reservacion\n");
+	scanf("%d",&year);
+	if(year > 2035 || year < 2021){
+		printf("El anio indicado es invalido\n");
+		reservarAulas();
+	}
+	printf("Digite la hora de inicio de la reservacion: ");
+	scanf("%d",&horaInicio);
+	if (horaInicio < 0 || horaInicio > 23){
+		printf("HOra de inicio indicada es invalida\n");
+		reservarAulas();
+	}
+	printf("Digite los minutos para la reservacion: ");
+	scanf("%d",&minutosInicio);
+	if(minutosInicio < 0 || minutosInicio > 59){
+		printf("Los minutos indicados son invalidos\n");
+		reservarAulas();
+	}
+	printf("Digite la hora final de la reservacion: ");
+	scanf("%d",&horaFin);
+	if (horaFin < 0 || horaFin > 23){
+		printf("LA hora indicada no es valida\n");
+		reservarAulas();
+	}
+	printf("Digite los minutos finales para la reservacion: ");
+	scanf("%d",&minutosFin);
+	if(minutosFin < 0 || minutosFin > 59){
+		printf("Los minutos indicados son invalidos\n");
+		reservarAulas();
+	}
+	printf("Digite el nombre del aula:");
+	scanf("%s",&nombreAula);
+	
+	printf("Digite el periodo de reservacion: ");
+	scanf("%d",&periodo);
+	if (periodo < 0 || periodo > 2){
+		printf("Periodo indicado es invalido\n");
+		reservarAulas();
+	}
+
+	printf("Digite el codigo del curso:");
+	scanf("%d",&codigoCurso);
+
+	printf("Digite el grupo del curso:");
+	scanf("%d",&grupo);
+	
+	snprintf(query,1000,"SELECT Capacidad from Aulas WHERE Nombre_Aula = \'%s\'", nombreAula);
+	if(mysql_query(conn,query)){
+		fprintf(stderr, "%s\n", mysql_error(conn));
+		printf("AUla no encontrada");
+		reservarAulas();
+	}
+	res = mysql_use_result(conn);
+	row = mysql_fetch_row(res);
+	capacidadAula = atoi(row[0]);
+	mysql_free_result(res);
+
+	snprintf(query,1000,"SELECT Cantidad_Estudiantes from Cursos_por_Periodo WHERE Codigo_Curso = \'%d\' AND Periodo = \'%d\' AND Anio = \'%d\' AND Grupo = \'%d\'", codigoCurso, periodo,year,grupo);
+	if(mysql_query(conn,query)){
+		fprintf(stderr, "%s\n", mysql_error(conn));
+		//printf("Curso no enconrado");
+		reservarAulas();
+	}
+	res = mysql_use_result(conn);
+	row = mysql_fetch_row(res);
+	capacidadCurso = atoi(row[0]);
+	mysql_free_result(res);
+
+	if(capacidadAula >= capacidadCurso){
+		snprintf(query,1000,"INSERT INTO Reservacion_de_Aulas(Codigo_Reservacion,Fecha,Hora_Inicio,Hora_Fin,Codigo_Curso,Periodo,Año,Grupo,Nombre_Aula) VALUES (NULL,\'%d/%d/%d\',\'%d:%d:00\',\'%d:%d:00\',\'%d\',\'%d\',\'%d\',\'%d\',\'%s\')",year,mes,dia,horaInicio,minutosInicio,horaFin,minutosFin,codigoCurso,periodo,year,grupo,nombreAula);
+		/* definicion de la consulta y el origen de la conexion */
+		if(mysql_query(conn, query)){
+			fprintf(stderr, "%s\n", mysql_error(conn));
+			printf("Toy malito we");
+        	reservarAulas();
+		}
+	}
+	printf("no etro");
 }
 

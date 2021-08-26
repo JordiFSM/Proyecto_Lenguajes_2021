@@ -32,6 +32,8 @@ void menuOperativo(){
 		menuCursoPeriodo();
 	}else if (opcion == 1){
 		agregarAulas();
+	}else if (opcion == 5){
+		reservarAulas();
 	}
 }
 
