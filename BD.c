@@ -159,8 +159,7 @@ void borrarCursoPeriodo(){
 	scanf("%d", &grupo);
 	while(getchar()!='\n');
 	snprintf(query,500,"DELETE FROM Cursos_por_Periodo WHERE Codigo_Curso = \'%d\' AND Periodo = \'%d\' AND Anio = \'%d\' AND Grupo = \'%d\'", codigoCurso, periodo,year,grupo);
-	if (mysql_query(conn, query));
-	{ /* definicion de la consulta y el origen de la conexion */
+	if (mysql_query(conn, query)){ /* definicion de la consulta y el origen de la conexion */
 		fprintf(stderr, "%s\n", mysql_error(conn));
 		menuOperativo();
 		//exit(1);
@@ -430,6 +429,24 @@ int maxReservaciones(){
 		printf("%d",atoi(row[0]));
 		return atoi(row[0]);
 	}
+}
+
+void cancelarReservacion(){
+	mysql_free_result(res);
+	char query[500]= {0};
+	int identificador;
+	printf("Digite el identificador de reservacion a eliminar: ");
+	scanf("%d",&identificador);
+	snprintf(query,500,"DELETE FROM Reservacion_de_Aulas WHERE Codigo_Reservacion = \'%d\'",identificador);
+	if (mysql_query(conn, query)){ /* definicion de la consulta y el origen de la conexion */
+		fprintf(stderr, "%s\n", mysql_error(conn));
+		menuOperativo();
+		//exit(1);
+	}else{
+		printf("La reservacion fue eliminada con exito\n");
+		menuOperativo();
+	}
+	
 }
 
 

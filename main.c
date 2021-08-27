@@ -34,6 +34,8 @@ void menuOperativo(){
 		agregarAulas();
 	}else if (opcion == 5){
 		reservarAulas();
+	}else if(opcion == 6){
+		cancelarReservacion();
 	}
 }
 
