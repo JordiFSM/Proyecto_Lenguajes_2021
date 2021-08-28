@@ -522,6 +522,98 @@ void mostrarReservasAnioMes(){
 	}
 }
 
+//Consultas
+
+void consultaFecha(){
+	int dia;
+	int mes;
+	int year;
+	char query[1000];
+	printf("Digite el dia para la reservacion: ");
+	scanf("%d",&dia);
+	if (dia > 31 || dia < 0){
+		printf("El dia indicado es incorrecto \n");
+		reservarAulas();
+	}
+	printf("Digite el mes para la reservacion\n: ");
+	scanf("%d",&mes);
+	if (mes > 12 || mes < 1){
+		printf("El mes indicado es incorrecto\n");
+		reservarAulas();
+	}
+	printf("Digite el anio para la reservacion\n");
+	scanf("%d",&year);
+	if(year > 2035 || year < 2021){
+		printf("El anio indicado es invalido\n");
+		reservarAulas();
+	}
+	snprintf(query,1000,"SELECT Nombre_Aula, Codigo_Reservacion, Año, Periodo, Codigo_Curso, Grupo, Hora_Inicio, Hora_Fin from Reservacion_de_Aulas WHERE Fecha = \'%d/%d/%d\' Order By Nombre_Aula", year,mes,dia);
+	if(mysql_query(conn,query)){
+		fprintf(stderr, "%s\n", mysql_error(conn));
+		printf("Fecha no encontrada");
+		reservarAulas();
+	}
+	res = mysql_use_result(conn);
+	printf("\tNombre Aula\tCodigo_Reservacion\tAnio\tPeriodo\tCodigo de Curso\tGrupo\tHora de Inicio\tHora de Fin\n");
+	while ((row = mysql_fetch_row(res)) != NULL) /* recorrer la variable res con todos los registros obtenidos para su uso */
+		printf("\t%s\t\t%s\t\t\t%s\t%s\t%s\t\t%s\t%s\t%s\n", row[0],row[1],row[2],row[3],row[4],row[5],row[6],row[7]); /* la variable row se convierte en un arreglo por el numero de campos que hay en la tabla */
+	menuAdministrativo();
+}
+
+void consultaAula(){
+	char nombreAula[10];
+	char query[1000];
+	printf("Digite el nombre del aula:");
+	scanf("%s",&nombreAula);
+	snprintf(query,1000,"SELECT Fecha,Hora_Inicio, Hora_Fin, Codigo_Reservacion, Anio, Periodo, Codigo_Curso, Grupo from Reservacion_de_Aulas WHERE Nombre_Aula = \'%s\' Order By Fecha asc, Hora_Inicio", nombreAula);
+	if(mysql_query(conn,query)){
+		fprintf(stderr, "%s\n", mysql_error(conn));
+		printf("Aula no encontrada");
+		reservarAulas();
+	}
+	res = mysql_use_result(conn);
+	printf("\tFecha\t\tHora de Inicio\tHora de Fin\tCodigo_Reservacion\tAnio\tPeriodo\tCodigo de Curso\tGrupo\n");
+	while ((row = mysql_fetch_row(res)) != NULL) /* recorrer la variable res con todos los registros obtenidos para su uso */
+		printf("\t%s\t%s\t%s\t%s\t\t\t%s\t%s\t%s\t\t%s\n", row[0],row[1],row[2],row[3],row[4],row[5],row[6],row[7]); /* la variable row se convierte en un arreglo por el numero de campos que hay en la tabla */
+	menuAdministrativo();
+}
+
+
+void consultaCurso(){
+	int year;
+	int periodo;
+	int codigoCurso;
+	int grupo;
+	char query[1000];
+	printf("\tDigite el anio del curso: ");
+	scanf("%d",&periodo);
+	printf("\tDigite el periodo del curso: ");
+	scanf("%d",&periodo);
+	if (periodo < 0 || periodo > 2){
+		printf("\tPeriodo indicado es invalido\n");
+		reservarAulas();
+	}
+	printf("\tDigite el codigo del curso:");
+	scanf("%d",&codigoCurso);
+	printf("\tDigite el grupo del curso:");
+	scanf("%d",&grupo);
+	snprintf(query,1000,"SELECT Codigo_Reservacion, Fecha, Hora_Inicio, Hora_Fin, Nombre_Aula from Reservacion_de_Aulas WHERE Año = \'%d\' AND Periodo = \'%d\' AND Codigo_Curso = \'%d\' AND Grupo = \'%d\' Order By Fecha, Hora_Inicio, Nombre_Aula", year,periodo,codigoCurso,grupo);
+	if(mysql_query(conn,query)){
+		fprintf(stderr, "%s\n", mysql_error(conn));
+		printf("Curso no encontrado");
+		reservarAulas();
+	}else{
+		res = mysql_use_result(conn);
+		printf("\tCodigo_Reservacion\tFecha\tHora de Inicio\tHora de Fin\tNombre Aula\n");
+		while ((row = mysql_fetch_row(res)) != NULL) /* recorrer la variable res con todos los registros obtenidos para su uso */
+		{
+			printf("\t%s\t\t%s\t%s\t%s\t%s\n", row[0],row[1],row[2],row[3],row[4]); /* la variable row se convierte en un arreglo por el numero de campos que hay en la tabla */
+		}
+		menuAdministrativo();
+	}
+	
+}
+
 
 
 

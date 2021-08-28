@@ -14,6 +14,8 @@ void menuPrincipal(){
 		while(getchar()!='\n');
 		if (opcion == 1){
 			menuOperativo();
+		}else if(opcion ==2){
+			menuAdministrativo();
 		}
 	}while(opcion != 0);
 }
@@ -40,6 +42,23 @@ void menuOperativo(){
 		menuEstadisticas();
 	}else if (opcion == 8){
 		return;
+	}
+}
+
+void menuAdministrativo(){
+	int opcion = 0;
+	printf("\n\n\t****Sistema de administracion de aulas**\n\t\t  Menu de Opciones Administrativas");
+	printf("\n\t(Debe ingresar un numero valido en el menu)\n\t1. Consultar por dia\n\t2. Consultar por aula\n\t3. Consultar por Curso\n\t4. Salir\n\tIndique a que opcion desean ingresar: ");
+	scanf("%i",&opcion);
+	while(getchar()!='\n');
+    if (opcion == 1){
+        consultaFecha();
+    }else if(opcion == 2){
+		consultaAula();
+	}else if(opcion == 3){
+		consultaCurso();
+	}else{
+		menuPrincipal();
 	}
 }
 
