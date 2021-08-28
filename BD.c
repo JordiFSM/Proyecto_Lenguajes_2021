@@ -446,8 +446,82 @@ void cancelarReservacion(){
 		printf("La reservacion fue eliminada con exito\n");
 		menuOperativo();
 	}
-	
 }
+
+void mostrarAulasMasReservadas(){
+	char query[500]= {0};
+	snprintf(query,500,"SELECT Nombre_Aula, COUNT(Nombre_Aula) AS RANKING FROM Reservacion_de_Aulas GROUP BY Nombre_Aula ORDER BY COUNT(Nombre_Aula) DESC");
+	if (mysql_query(conn, query)){ /* definicion de la consulta y el origen de la conexion */
+		fprintf(stderr, "%s\n", mysql_error(conn));
+		menuOperativo();
+		//exit(1);
+	}else{
+		int contador = 0;
+		res = mysql_use_result(conn);
+		
+		while(contador < 3){
+			row = mysql_fetch_row(res);
+			if(contador ==0){
+				printf("\n Primer Aula mas reservada: %s \n",row[0]);
+				contador ++;
+			}else if (contador == 1){
+				printf("\n Segunda Aula mas reservada: %s \n",row[0]);
+				contador ++;
+			}else{
+				printf("\n Tercer Aula mas reservada: %s \n",row[0]);
+				contador ++;
+			}
+		}
+		mysql_free_result(res);
+	}
+}
+
+void mostrarProfesoresMasReservados(){
+	char query[500]= {0};
+	snprintf(query,500,"SELECT P.Nombre, COUNT(CP.Cedula_Profesor) AS RANKING FROM Reservacion_de_Aulas R INNER JOIN Cursos_por_Periodo CP ON R.Codigo_Curso = CP.Codigo_Curso AND CP.Grupo = R.Grupo AND CP.Periodo = R.Periodo AND CP.Anio = R.Año INNER JOIN Profesores P ON CP.Cedula_Profesor = P.Cedula_Profesor GROUP BY Nombre ORDER BY COUNT(CP.Cedula_Profesor) DESC");
+	if (mysql_query(conn, query)){ /* definicion de la consulta y el origen de la conexion */
+		fprintf(stderr, "%s\n", mysql_error(conn));
+		menuOperativo();
+		//exit(1);
+	}else{
+		int contador = 0;
+		res = mysql_use_result(conn);
+		
+		while(contador < 3){
+			row = mysql_fetch_row(res);
+			if(contador ==0){
+				printf("\n Primer Profesor mas reservado: %s \n",row[0]);
+				contador ++;
+			}else if (contador == 1){
+				printf("\n Segunda Profesor mas reservado: %s \n",row[0]);
+				contador ++;
+			}else{
+				printf("\n Tercer Profesor mas reservado: %s \n",row[0]);
+				contador ++;
+			}
+		}
+		mysql_free_result(res);
+	}
+}
+
+void mostrarReservasAnioMes(){
+	char query[500]= {0};
+	snprintf(query,500,"select Date_format(Fecha,'%Y/%M'), COUNT(Codigo_Reservacion) AS RANKING From Reservacion_de_Aulas GROUP BY Date_format(Fecha,'%Y/%M') ORDER BY COUNT(Codigo_Reservacion) DESC");
+	if (mysql_query(conn, query)){ /* definicion de la consulta y el origen de la conexion */
+		fprintf(stderr, "%s\n", mysql_error(conn));
+		menuOperativo();
+		//exit(1);
+	}else{
+		int contador = 0;
+		res = mysql_use_result(conn);
+		
+		while(row = mysql_fetch_row(res)){
+			printf("\n Periodo: %s con cantidad de reservaciones de %s  \n",row[0],row[1]);
+		}
+		mysql_free_result(res);
+	}
+}
+
 
 
 

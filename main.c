@@ -36,6 +36,10 @@ void menuOperativo(){
 		reservarAulas();
 	}else if(opcion == 6){
 		cancelarReservacion();
+	}else if (opcion == 7){
+		menuEstadisticas();
+	}else if (opcion == 8){
+		return;
 	}
 }
 
@@ -76,6 +80,26 @@ void menuCursoPeriodo(){
 	}else{
 		printf("La Opcion indicada es invalida");
 		menuCursoPeriodo();
+	}
+}
+
+void menuEstadisticas(){
+    int opcion = 0;
+    printf("\n\n\t****Sistema de administracion de aulas**\n\t\t  Menu de Opciones de estadisticas");
+    printf("\n\t(Debe ingresar un numero valido en el menu)\n\t1. Aulas mas reservadas\n\t2. Profesores mas reservados\n\t3. Cantidad de reservaciones anio-mes\n\t4.Volver\n\tIndique a que opcion desean ingresar: ");
+    scanf("%i",&opcion);
+	while(getchar()!='\n');
+    if (opcion == 1){
+        mostrarAulasMasReservadas();
+    }else if(opcion == 2){
+		mostrarProfesoresMasReservados();
+	}else if(opcion == 3){
+		mostrarReservasAnioMes();
+	}else if (opcion == 4){
+		menuOperativo();
+	}else{
+		printf("La Opcion indicada es invalida");
+		menuProfesor();
 	}
 }
 
