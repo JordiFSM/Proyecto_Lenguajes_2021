@@ -1,8 +1,31 @@
-
-#include <stdio.h>
-#include <mysql.h> 
-#include <string.h> 
 #include "BD.c"
+
+/*****keys administrativos************************
+ * Nombre del archivo: main.c
+ * Tipo de archivo: codigo fuente c
+ * Proyecto: PP1_LENGUAJES keys
+ * Autor: Jordi Segura Madrigal, Kevin Lanzas Quen
+ * Empresa: Instituto Tecnológico de Costa Rica
+ *****Descripción**********************************
+ * Archivo que contiene los menus del programa, es el encargado de 
+ * interactuar con el usuario y realizar las ordenes indicadas, así como mostrar
+ * los datos que se pidan desde la consola.
+ *****Versión**************************************
+ * ## 1.0 | Fecha: 28/08/2021 | Autor: Jordi Segura Madrigal, Kevin Lanzas Quen
+ * 
+ **************************************************/
+
+/*****Nombre***************************************
+ * menuPrincipal
+ *****Descripción**********************************
+ * Funcion encargada de mostrar las opciones del menu
+ * principal lo cual desplieaga los menus de opciones
+ * operativas y administrativas, ademas de salir.
+ *****Retorno**************************************
+ * N/A
+ *****Entradas*************************************
+ * N/A
+ **************************************************/
 
 void menuPrincipal(){
 	int opcion = opcion = (int)malloc(sizeof(int));
@@ -16,9 +39,23 @@ void menuPrincipal(){
 			menuOperativo();
 		}else if(opcion ==2){
 			menuAdministrativo();
+		}else if(opcion == 3){
+			break;
 		}
 	}while(opcion != 0);
 }
+
+/*****Nombre***************************************
+ * menuOperativo
+ *****Descripción**********************************
+ * Funcion encargada de mostrar las opciones del menu
+ * Operativo lo cual desplieaga el menus de opciones y
+ * envia al usuario donde desee ir.
+ *****Retorno**************************************
+ * N/A
+ *****Entradas*************************************
+ * N/A
+ **************************************************/
 
 void menuOperativo(){
 	int opcion = 0;
@@ -45,6 +82,18 @@ void menuOperativo(){
 	}
 }
 
+/*****Nombre***************************************
+ * menuAdministrativo
+ *****Descripción**********************************
+ * Funcion encargada de mostrar las opciones del menu
+ * Administrativo lo cual desplieaga el menus de opciones y
+ * envia al usuario donde desee ir.
+ *****Retorno**************************************
+ * N/A
+ *****Entradas*************************************
+ * N/A
+ **************************************************/
+
 void menuAdministrativo(){
 	int opcion = 0;
 	printf("\n\n\t****Sistema de administracion de aulas**\n\t\t  Menu de Opciones Administrativas");
@@ -61,6 +110,18 @@ void menuAdministrativo(){
 		menuPrincipal();
 	}
 }
+
+/*****Nombre***************************************
+ * menuAdministrativo
+ *****Descripción**********************************
+ * Funcion encargada de mostrar las opciones del menu
+ * de profesores lo cual desplieaga el menus de opciones y
+ * envia al usuario donde desee ir.
+ *****Retorno**************************************
+ * N/A
+ *****Entradas*************************************
+ * N/A
+ **************************************************/
 
 void menuProfesor(){
     int opcion = 0;
@@ -82,6 +143,18 @@ void menuProfesor(){
 	}
 }
 
+/*****Nombre***************************************
+ * menuCursoPeriodo
+ *****Descripción**********************************
+ * Funcion encargada de mostrar las opciones del menu
+ * de cursos por periodo lo cual desplieaga el menus de opciones y
+ * envia al usuario donde desee ir.
+ *****Retorno**************************************
+ * N/A
+ *****Entradas*************************************
+ * N/A
+ **************************************************/
+
 void menuCursoPeriodo(){
     int opcion = 0;
     printf("\n\n\t****Sistema de administracion de aulas**\n\t\t  Menu de Opciones de Cursos por Periodo");
@@ -101,6 +174,18 @@ void menuCursoPeriodo(){
 		menuCursoPeriodo();
 	}
 }
+
+/*****Nombre***************************************
+ * menuEstadisticas
+ *****Descripción**********************************
+ * Funcion encargada de mostrar las opciones del menu
+ * de estadisticaslo cual desplieaga el menus de opciones y
+ * envia al usuario donde desee ir.
+ *****Retorno**************************************
+ * N/A
+ *****Entradas*************************************
+ * N/A
+ **************************************************/
 
 void menuEstadisticas(){
     int opcion = 0;

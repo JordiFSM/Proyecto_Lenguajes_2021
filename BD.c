@@ -2,6 +2,21 @@
 #include <mysql.h> 
 #include <string.h>
 
+/*****keys administrativos************************
+ * Nombre del archivo: BD.c
+ * Tipo de archivo: codigo fuente c
+ * Proyecto: PP1_LENGUAJES keys
+ * Autor: Jordi Segura Madrigal, Kevin Lanzas Quen
+ * Empresa: Instituto Tecnológico de Costa Rica
+ *****Descripción**********************************
+ * Estructura que contiene las funciones responsables de conectarse
+ * a mysql, la base de datos del proyecto y realizar las diferentes consultas necesarias para 
+ * el funcionamiento del sistema
+ *****Versión**************************************
+ * ## 1.0 | Fecha: 28/08/2021 | Autor: Jordi Segura Madrigal, Kevin Lanzas Quen
+ * 
+ **************************************************/
+
 /* libreria que nos permite hacer el uso de las conexiones y consultas con MySQL */
 MYSQL *conn; /* variable de conexión para MySQL */
 MYSQL_RES *res; /* variable que contendra el resultado de la consuta */
@@ -11,6 +26,17 @@ char *server = "localhost"; /*direccion del servidor 127.0.0.1, localhost o dire
 char *user = "root"; /*usuario para consultar la base de datos */
 char *password = "Uzumakii2011"; /* contraseña para el usuario en cuestion */
 char *database = "Sistema_Administracion_Aulas"; /*nombre de la base de datos a consultar */
+
+/*****Nombre***************************************
+ * conectarBaseDatos
+ *****Descripción**********************************
+ * Funcion responsable de tomar las variables globales
+ * para lograr conectarse a la base de datos de mysql
+ *****Retorno**************************************
+ * N/A
+ *****Entradas*************************************
+ * N/A
+ **************************************************/
 
 void conectarBaseDatos(){
 	conn = mysql_init(NULL); /*inicializacion a nula la conexión */
@@ -22,11 +48,33 @@ void conectarBaseDatos(){
 	}
 }
 
+/*****Nombre***************************************
+ * desconectarBaseDatos
+ *****Descripción**********************************
+ * Funcion responsable de lograr desconectarse de la
+ * base de datos de mysql
+ *****Retorno**************************************
+ * N/A
+ *****Entradas*************************************
+ * N/A
+ **************************************************/
+
 void desconectarBaseDatos(){
 		/* se libera la variable res y se cierra la conexión */
 	mysql_free_result(res);
 	mysql_close(conn);
 }
+
+/*****Nombre***************************************
+ * mostrarProfesores
+ *****Descripción**********************************
+ * Funcion que realiza la consulta de seleccionar los 
+ * profesores dentro de la base de datos y los muestra todos.
+ *****Retorno**************************************
+ * N/A
+ *****Entradas*************************************
+ * N/A
+ **************************************************/
 
 void mostrarProfesores(){
 	/* enviar consulta SQL */
@@ -43,15 +91,27 @@ void mostrarProfesores(){
 	menuOperativo();
 }
 
+/*****Nombre***************************************
+ * incluirProfesor
+ *****Descripción**********************************
+ * Funcion que realiza el query de insercion a la tabla de
+ * profesores con los datos que pide en las entradas, para 
+ * al final insertar el profesor a la base de datos.
+ *****Retorno**************************************
+ * N/A
+ *****Entradas*************************************
+ * N/A
+ **************************************************/
+
 void incluirProfesor(){
 	char nombre [30];
 	int cedula;
 	char query[200]= {0};
-	printf("Digite la cedula del profesor: ");
+	printf("\tDigite la cedula del profesor: ");
 	scanf("%d", &cedula);
 	while(getchar()!='\n');
-	
-	printf("Digite el nombre del profesor: \n");
+
+	printf("\tDigite el nombre del profesor: \n");
 	//scanf("%s", &nombre);
 	fgets(nombre,30,stdin);
 	nombre[strlen(nombre)-1] = '\0';
@@ -63,9 +123,21 @@ void incluirProfesor(){
         menuOperativo();
 		//exit(1);
 	}
-	printf("El profesor fue incluido con exito");
+	printf("\tEl profesor fue incluido con exito!!!");
 	menuOperativo();
 }
+
+/*****Nombre***************************************
+ * borrarTodo
+ *****Descripción**********************************
+ * Funcion que realiza el query de Delete a la tabla,
+ * y borra todos los registros de profesores dentro de 
+ * la base de datos.
+ *****Retorno**************************************
+ * N/A
+ *****Entradas*************************************
+ * N/A
+ **************************************************/
 
 void borrarTodo(){
 	if (mysql_query(conn, "DELETE from Profesores"))
@@ -73,8 +145,20 @@ void borrarTodo(){
 		fprintf(stderr, "%s\n", mysql_error(conn));
 		exit(1);
 	}
-	printf("Los profesores fueron borrados con exito");
+	printf("\tLos profesores fueron borrados con exito!!!");
 }
+
+/*****Nombre***************************************
+ * listarCursos
+ *****Descripción**********************************
+ * Funcion que realiza el query de consulta Select a 
+ * todos los registros de Cursos que hayan en la base de datos
+ * para luego hacer impresión de estos en consola.
+ *****Retorno**************************************
+ * N/A
+ *****Entradas*************************************
+ * N/A
+ **************************************************/
 
 void listarCursos(){
 	/* enviar consulta SQL */
@@ -85,6 +169,19 @@ void listarCursos(){
 		printf("\t%s\t%s\t%s\n", row[0],row[1],row[2]); /* la variable row se convierte en un arreglo por el numero de campos que hay en la tabla */
 	menuOperativo();
 }
+
+/*****Nombre***************************************
+ * incluirCursos
+ *****Descripción**********************************
+ * Funcion que pide los datos necesarios por medio de entradas
+ * en la consola para realizar la insercion de un curso por
+ * periodo a la base de datos de mysql.
+ *****Retorno**************************************
+ * N/A
+ *****Entradas*************************************
+ * N/A
+ **************************************************/
+
 void incluirCursos(){
 	int codigoCurso;
 	int year; 
@@ -93,31 +190,31 @@ void incluirCursos(){
     int cedulaProfe;
     int cantEstudiante;
 	char query[500]= {0};
-	printf("Digite el codigo del curso: ");
+	printf("\tDigite el codigo del curso: ");
 	scanf("%d", &codigoCurso);
 	while(getchar()!='\n');
-	printf("Digite el anio: ");
+	printf("\tDigite el anio: ");
 	scanf("%d", &year);
 	while(getchar()!='\n');
     if(year > 2035 || year < 2021){
-        printf("EL anio debe ser mayor o igual a 2021 o menor a 2035");
+        printf("\tEL anio debe ser mayor o igual a 2021 o menor a 2035");
         incluirCursos();
     }
-    printf("Digite el periodo: ");
+    printf("\tDigite el periodo: ");
 	scanf("%d", &periodo);
 	while(getchar()!='\n');
     if(periodo == 1 || periodo == 2){
-        printf("Digite el grupo: ");
+        printf("\tDigite el grupo: ");
 	    scanf("%d", &grupo);
 	    while(getchar()!='\n');
-        printf("Digite la cedula del profesor: ");
+        printf("\tDigite la cedula del profesor: ");
 	    scanf("%d", &cedulaProfe);
 	    while(getchar()!='\n');
-        printf("Digite la cantidad de estudiantes: ");
+        printf("\tDigite la cantidad de estudiantes: ");
 	    scanf("%d", &cantEstudiante);
 	    while(getchar()!='\n');
     }else{
-        printf("El periodo indicado es invalido \n");
+        printf("\tEl periodo indicado es invalido \n");
         incluirCursos();
     }
 	/* enviar consulta SQL */
@@ -128,9 +225,22 @@ void incluirCursos(){
         menuOperativo();
 		//exit(1);
 	}
-	printf("El curso fue agregado al periodo indicado");
+	printf("\tEl curso fue agregado al periodo indicado");
 	menuOperativo();
 }
+
+/*****Nombre***************************************
+ * listarCursosPeriodo
+ *****Descripción**********************************
+ * Funcion encargada de hacer la solicitud de los cursos 
+ * por periodo a la base de datos para luego mostrarlos
+ * por impresión en consola.
+ *****Retorno**************************************
+ * N/A
+ *****Entradas*************************************
+ * N/A
+ **************************************************/
+
 void listarCursosPeriodo(){
 	/* enviar consulta SQL */
 	mysql_query(conn, "select * from Cursos_por_Periodo");
@@ -140,22 +250,36 @@ void listarCursosPeriodo(){
 		printf("\t%s\t%s\t%s\t%s\t%s\t%s\n", row[0],row[1],row[2],row[3],row[4],row[5]); /* la variable row se convierte en un arreglo por el numero de campos que hay en la tabla */
 	menuOperativo();
 }	
+
+/*****Nombre***************************************
+ * borrarCursoPeriodo
+ *****Descripción**********************************
+ * Funcion encargada de hacer la solicitud de los datos de 
+ * un curso por periodo existente en la base de datos, por
+ * medio de entradas por consola, realiza el query y 
+ * elimina este registro de ella.
+ *****Retorno**************************************
+ * N/A
+ *****Entradas*************************************
+ * N/A
+ **************************************************/
+
 void borrarCursoPeriodo(){
 	int codigoCurso;
 	int year; 
     int periodo;
     int grupo;
 	char query[500]= {0};
-	printf("Digite el codigo del curso: ");
+	printf("\tDigite el codigo del curso: ");
 	scanf("%d", &codigoCurso);
 	while(getchar()!='\n');
-	printf("Digite el anio: ");
+	printf("\tDigite el anio: ");
 	scanf("%d", &year);
 	while(getchar()!='\n');
-	printf("Digite el periodo: ");
+	printf("\tDigite el periodo: ");
 	scanf("%d", &periodo);
 	while(getchar()!='\n');
-	printf("Digite el grupo: ");
+	printf("\tDigite el grupo: ");
 	scanf("%d", &grupo);
 	while(getchar()!='\n');
 	snprintf(query,500,"DELETE FROM Cursos_por_Periodo WHERE Codigo_Curso = \'%d\' AND Periodo = \'%d\' AND Anio = \'%d\' AND Grupo = \'%d\'", codigoCurso, periodo,year,grupo);
@@ -164,8 +288,25 @@ void borrarCursoPeriodo(){
 		menuOperativo();
 		//exit(1);
 	}
-	printf("El curso fue eliminado del periodo indicado");
+	printf("\tEl curso fue eliminado del periodo indicado");
 }
+
+/*****Nombre***************************************
+ * agregarAulas
+ *****Descripción**********************************
+ * Funcion encargada de abrir el archivo que contiene
+ * la lista de las aulas, separarlas en tokens con su
+ * nombre y su cantidad, agregarlas despues de valida 
+ * el formato que se pide. En que haya alguna que no 
+ * cumpla con el formato o ya esté dentro seguira revisando
+ * los tokens hasta que termine de leer el archivo sin 
+ * detenerse por ello.
+ *****Retorno**************************************
+ * N/A
+ *****Entradas*************************************
+ * N/A
+ **************************************************/
+
 
 void agregarAulas(){
 	FILE *archivo;
@@ -177,7 +318,7 @@ void agregarAulas(){
 	int banderaError = 0;
 	archivo = fopen("./Aulas.txt", "r");
 	if(archivo == NULL) { 
-		printf("No se pudo abrir el archivo... \n"); 
+		printf("\tNo se pudo abrir el archivo... \n"); 
 		menuOperativo(); 
 	}
 	while (fgets(buffer,500, archivo)){
@@ -196,19 +337,16 @@ void agregarAulas(){
 						banderaError =3;
 						break;
 					}else{
-						printf("Token: %s\n", aula);
+						printf("\tToken: %s\n", aula);
 						if (isalpha(aula[0])){
-							printf("SI es letra");
 							int cont = 1;
 							int largo = strlen(aula)-1;
 							while (cont <= largo){
 								if(isdigit(aula[cont])){
-									printf("SI es NUmero");
 									cont+=1;
 								}else{
-									printf("NO es numero");
-									printf("EL nombre del aula: %s no cumple el formato \n",aula);
-									printf("Se seguiran insertando las aulas si el formato es correcto\n");
+									printf("\tEl nombre del aula: %s no cumple el formato \n",aula);
+									printf("\tSe seguiran insertando las aulas si el formato es correcto\n");
 									break;
 								}
 							}
@@ -219,7 +357,7 @@ void agregarAulas(){
 					canESt = (char*)malloc(3);
 					canESt = token;
 					if (strlen(canESt) > 3){
-						printf("La cantidad de estudiantes excede la maxima capacidad del aula \n");
+						printf("\tLa cantidad de estudiantes excede la maxima capacidad del aula \n");
 						banderaError= 3;
 						break;
 					}else{
@@ -227,12 +365,12 @@ void agregarAulas(){
 						int largo = strlen(canESt)-1;
 						while (cont <= largo){
 							if(isdigit(canESt[cont])){
-								printf("SI");
+								printf("\tSI");
 								cont+=1;
 							}else{
-								printf("NO");
-								printf("La capacidad indicada %s no cumple la capacidad maxima del aula \n",canESt);
-								printf("Se seguiran insertando las aulas si el formato es correcto\n");
+								printf("\tNO");
+								printf("\tLa capacidad indicada %s no cumple la capacidad maxima del aula \n",canESt);
+								printf("\tSe seguiran insertando las aulas si el formato es correcto\n");
 								break;
 							}
 						}
@@ -255,9 +393,23 @@ void agregarAulas(){
 		}
 
     }
-	printf("Se agregaron las aulas que no estan repetidas y las que cumplen el formato");
+	printf("\tSe agregaron las aulas que no estan repetidas y las que cumplen el formato");
 	fclose(archivo);
 }
+
+/*****Nombre***************************************
+ * reservarAulas
+ *****Descripción**********************************
+ * Funcion encargada de obtener los datos de la consola
+ * para crear una reserva valida para ser ingresada en 
+ * la base de datos, permite agregar más de un aula si 
+ * la capacidad del aula es menor a la cantidad de estudiantes 
+ * del curso.
+ *****Retorno**************************************
+ * N/A
+ *****Entradas*************************************
+ * N/A
+ **************************************************/
 
 void reservarAulas(){
 	int codActual = maxReservaciones();
@@ -278,72 +430,72 @@ void reservarAulas(){
 	int codigoCurso;
 	int grupo;
 
-	printf("Digite el dia para la reservacion: ");
+	printf("\tDigite el dia para la reservacion: ");
 	scanf("%d",&dia);
 	if (dia > 31 || dia < 0){
-		printf("El dia indicado es incorrecto \n");
+		printf("\tEl dia indicado es incorrecto \n");
 		reservarAulas();
 	}
-	printf("Digite el mes para la reservacion\n: ");
+	printf("\tDigite el mes para la reservacion\n: ");
 	scanf("%d",&mes);
 	if (mes > 12 || mes < 1){
-		printf("El mes indicado es incorrecto\n");
+		printf("\tEl mes indicado es incorrecto\n");
 		reservarAulas();
 	}
-	printf("Digite el anio para la reservacion\n");
+	printf("\tDigite el anio para la reservacion\n");
 	scanf("%d",&year);
 	if(year > 2035 || year < 2021){
-		printf("El anio indicado es invalido\n");
+		printf("\tEl anio indicado es invalido\n");
 		reservarAulas();
 	}
-	printf("Digite la hora de inicio de la reservacion: ");
+	printf("\tDigite la hora de inicio de la reservacion: ");
 	scanf("%d",&horaInicio);
 	if (horaInicio < 0 || horaInicio > 23){
-		printf("HOra de inicio indicada es invalida\n");
+		printf("\tHora de inicio indicada es invalida\n");
 		reservarAulas();
 	}
-	printf("Digite los minutos para la reservacion: ");
+	printf("\tDigite los minutos para la reservacion: ");
 	scanf("%d",&minutosInicio);
 	if(minutosInicio < 0 || minutosInicio > 59){
-		printf("Los minutos indicados son invalidos\n");
+		printf("\tLos minutos indicados son invalidos\n");
 		reservarAulas();
 	}
-	printf("Digite la hora final de la reservacion: ");
+	printf("\tDigite la hora final de la reservacion: ");
 	scanf("%d",&horaFin);
 	if (horaFin < 0 || horaFin > 23){
-		printf("LA hora indicada no es valida\n");
+		printf("\tLa hora indicada no es valida\n");
 		reservarAulas();
 	}
-	printf("Digite los minutos finales para la reservacion: ");
+	printf("\tDigite los minutos finales para la reservacion: ");
 	scanf("%d",&minutosFin);
 	if(minutosFin < 0 || minutosFin > 59){
-		printf("Los minutos indicados son invalidos\n");
+		printf("\tLos minutos indicados son invalidos\n");
 		reservarAulas();
 	}
 	if(horaInicio >= horaFin){
-		printf("Las horas indicadas son invalidas\n");
+		printf("\tLas horas indicadas son invalidas\n");
 		reservarAulas();
 	}
-	printf("Digite el nombre del aula:");
+	printf("\tDigite el nombre del aula:");
 	scanf("%s",&nombreAula);
 	
-	printf("Digite el periodo de reservacion: ");
+	printf("\tDigite el periodo de reservacion: ");
 	scanf("%d",&periodo);
 	if (periodo < 0 || periodo > 2){
-		printf("Periodo indicado es invalido\n");
+		printf("\tPeriodo indicado es invalido\n");
 		reservarAulas();
 	}
 
-	printf("Digite el codigo del curso:");
+	printf("\tDigite el codigo del curso:");
 	scanf("%d",&codigoCurso);
 
-	printf("Digite el grupo del curso:");
+	printf("\tDigite el grupo del curso:");
 	scanf("%d",&grupo);
-	
+
 	snprintf(query,1000,"SELECT Capacidad from Aulas WHERE Nombre_Aula = \'%s\'", nombreAula);
 	if(mysql_query(conn,query)){
 		fprintf(stderr, "%s\n", mysql_error(conn));
-		printf("AUla no encontrada");
+		printf("\tAula no encontrada");
 		reservarAulas();
 	}
 	res = mysql_use_result(conn);
@@ -354,7 +506,7 @@ void reservarAulas(){
 	snprintf(query,1000,"SELECT Cantidad_Estudiantes from Cursos_por_Periodo WHERE Codigo_Curso = \'%d\' AND Periodo = \'%d\' AND Anio = \'%d\' AND Grupo = \'%d\'", codigoCurso, periodo,year,grupo);
 	if(mysql_query(conn,query)){
 		fprintf(stderr, "%s\n", mysql_error(conn));
-		//printf("Curso no enconrado");
+		printf("\tCurso no enconrado");
 		reservarAulas();
 	}
 	res = mysql_use_result(conn);
@@ -369,7 +521,7 @@ void reservarAulas(){
 			fprintf(stderr, "%s\n", mysql_error(conn));
         	reservarAulas();
 		}
-		printf("El codigo de su reservacion es: %d \n",codActual+1);
+		printf("\tEl codigo de su reservacion es: %d \n",codActual+1);
 		codActual ++;
 	}else{
 		int cupos = capacidadCurso - capacidadAula;
@@ -379,18 +531,18 @@ void reservarAulas(){
 			fprintf(stderr, "%s\n", mysql_error(conn));
         	reservarAulas();
 		}
-		printf("El codigo de su reservacion es: %d \n",codActual+1);
+		printf("\tEl codigo de su reservacion es: %d \n",codActual+1);
 		codActual ++;
 		while(cupos > 0){
 			char nombreAula[3];
 			printf("\nSe necesita un aula mas porque la cantidad de estudiantes supera el limite del aula \n");
-			printf("Digite el nombre del aula:");
+			printf("\tDigite el nombre del aula:");
 			scanf("%s",&nombreAula);
 			int capacidad;
 			snprintf(query,1000,"SELECT Capacidad from Aulas WHERE Nombre_Aula = \'%s\'", nombreAula);
 			if(mysql_query(conn,query)){
 				fprintf(stderr, "%s\n", mysql_error(conn));
-				printf("AUla no encontrada \n");
+				printf("\tAula no encontrada \n");
 			}else{
 				res = mysql_use_result(conn);
 				row = mysql_fetch_row(res);
@@ -403,7 +555,7 @@ void reservarAulas(){
 					fprintf(stderr, "%s\n", mysql_error(conn));
 				}else{
 					cupos = cupos - capacidad;
-					printf("El codigo de su reservacion es: %d\n",codActual+1);
+					printf("\tEl codigo de su reservacion es: %d\n",codActual+1);
 					codActual ++;
 				}
 				
@@ -413,6 +565,17 @@ void reservarAulas(){
 		menuOperativo();
 	}
 }
+
+/*****Nombre***************************************
+ * maxReservaciones
+ *****Descripción**********************************
+ * Funcion encargada de obtener los datos de la consulta
+ * del código máximo de las reservaciones.
+ *****Retorno**************************************
+ * int el numero siguiente de los códigos de reservacion
+ *****Entradas*************************************
+ * N/A
+ **************************************************/
 
 int maxReservaciones(){
 	char query[500]= {0};
@@ -431,11 +594,22 @@ int maxReservaciones(){
 	}
 }
 
+/*****Nombre***************************************
+ * cancelarReservacion
+ *****Descripción**********************************
+ * Funcion encargada de obtener los datos del identificador 
+ * de reservación para ser eliminado en la base de datos.
+ *****Retorno**************************************
+ * N/A
+ *****Entradas*************************************
+ * N/A
+ **************************************************/
+
 void cancelarReservacion(){
 	mysql_free_result(res);
 	char query[500]= {0};
 	int identificador;
-	printf("Digite el identificador de reservacion a eliminar: ");
+	printf("\tDigite el identificador de reservacion a eliminar: ");
 	scanf("%d",&identificador);
 	snprintf(query,500,"DELETE FROM Reservacion_de_Aulas WHERE Codigo_Reservacion = \'%d\'",identificador);
 	if (mysql_query(conn, query)){ /* definicion de la consulta y el origen de la conexion */
@@ -443,10 +617,22 @@ void cancelarReservacion(){
 		menuOperativo();
 		//exit(1);
 	}else{
-		printf("La reservacion fue eliminada con exito\n");
+		printf("\tLa reservacion fue eliminada con exito\n");
 		menuOperativo();
 	}
 }
+
+/*****Nombre***************************************
+ * mostrarAulasMasReservadas
+ *****Descripción**********************************
+ * Funcion encargada de obtener los datos de las 3 
+ * aulas más reservadas en la base de datos y las 
+ * muestra en pantalla.
+ *****Retorno**************************************
+ * N/A
+ *****Entradas*************************************
+ * N/A
+ **************************************************/
 
 void mostrarAulasMasReservadas(){
 	char query[500]= {0};
@@ -458,23 +644,35 @@ void mostrarAulasMasReservadas(){
 	}else{
 		int contador = 0;
 		res = mysql_use_result(conn);
-		
+
 		while(contador < 3){
 			row = mysql_fetch_row(res);
-			if(contador ==0){
-				printf("\n Primer Aula mas reservada: %s \n",row[0]);
+			if(contador == 0){
+				printf("\n\tPrimer Aula mas reservada: %s \n",row[0]);
 				contador ++;
 			}else if (contador == 1){
-				printf("\n Segunda Aula mas reservada: %s \n",row[0]);
+				printf("\n\tSegunda Aula mas reservada: %s \n",row[0]);
 				contador ++;
 			}else{
-				printf("\n Tercer Aula mas reservada: %s \n",row[0]);
+				printf("\n\tTercer Aula mas reservada: %s \n",row[0]);
 				contador ++;
 			}
 		}
 		mysql_free_result(res);
 	}
 }
+
+/*****Nombre***************************************
+ * mostrarProfesoresMasReservados
+ *****Descripción**********************************
+ * Funcion encargada de obtener los datos de los 3 
+ * profesores con más reservaciones en la base de datos
+ * y los muestra en pantalla.
+ *****Retorno**************************************
+ * N/A
+ *****Entradas*************************************
+ * N/A
+ **************************************************/
 
 void mostrarProfesoresMasReservados(){
 	char query[500]= {0};
@@ -490,19 +688,31 @@ void mostrarProfesoresMasReservados(){
 		while(contador < 3){
 			row = mysql_fetch_row(res);
 			if(contador ==0){
-				printf("\n Primer Profesor mas reservado: %s \n",row[0]);
+				printf("\n \tPrimer Profesor mas reservado: %s \n",row[0]);
 				contador ++;
 			}else if (contador == 1){
-				printf("\n Segunda Profesor mas reservado: %s \n",row[0]);
+				printf("\n \tSegunda Profesor mas reservado: %s \n",row[0]);
 				contador ++;
 			}else{
-				printf("\n Tercer Profesor mas reservado: %s \n",row[0]);
+				printf("\n \tTercer Profesor mas reservado: %s \n",row[0]);
 				contador ++;
 			}
 		}
 		mysql_free_result(res);
 	}
 }
+
+/*****Nombre***************************************
+ * mostrarReservasAnioMes
+ *****Descripción**********************************
+ * Funcion encargada de obtener los datos de las 
+ * reservaciones y las ordena por año-mes y las muestra 
+ * en pantalla.
+ *****Retorno**************************************
+ * N/A
+ *****Entradas*************************************
+ * N/A
+ **************************************************/
 
 void mostrarReservasAnioMes(){
 	char query[500]= {0};
@@ -516,7 +726,7 @@ void mostrarReservasAnioMes(){
 		res = mysql_use_result(conn);
 		
 		while(row = mysql_fetch_row(res)){
-			printf("\n Periodo: %s con cantidad de reservaciones de %s  \n",row[0],row[1]);
+			printf("\n \tPeriodo: %s con cantidad de reservaciones de %s  \n",row[0],row[1]);
 		}
 		mysql_free_result(res);
 	}
@@ -524,33 +734,46 @@ void mostrarReservasAnioMes(){
 
 //Consultas
 
+/*****Nombre***************************************
+ * consultaFecha
+ *****Descripción**********************************
+ * Funcion encargada de obtener los datos para realizar
+ * la consulta por la fecha de las reservaciones, hace
+ * el query de la consulta obtiene los datos y los muestra
+ * en pantalla
+ *****Retorno**************************************
+ * N/A
+ *****Entradas*************************************
+ * N/A
+ **************************************************/
+
 void consultaFecha(){
 	int dia;
 	int mes;
 	int year;
 	char query[1000];
-	printf("Digite el dia para la reservacion: ");
+	printf("\tDigite el dia para la reservacion: ");
 	scanf("%d",&dia);
 	if (dia > 31 || dia < 0){
-		printf("El dia indicado es incorrecto \n");
+		printf("\tEl dia indicado es incorrecto \n");
 		reservarAulas();
 	}
-	printf("Digite el mes para la reservacion\n: ");
+	printf("\tDigite el mes para la reservacion\n: ");
 	scanf("%d",&mes);
 	if (mes > 12 || mes < 1){
-		printf("El mes indicado es incorrecto\n");
+		printf("\tEl mes indicado es incorrecto\n");
 		reservarAulas();
 	}
-	printf("Digite el anio para la reservacion\n");
+	printf("\tDigite el anio para la reservacion\n");
 	scanf("%d",&year);
 	if(year > 2035 || year < 2021){
-		printf("El anio indicado es invalido\n");
+		printf("\tEl anio indicado es invalido\n");
 		reservarAulas();
 	}
 	snprintf(query,1000,"SELECT Nombre_Aula, Codigo_Reservacion, Año, Periodo, Codigo_Curso, Grupo, Hora_Inicio, Hora_Fin from Reservacion_de_Aulas WHERE Fecha = \'%d/%d/%d\' Order By Nombre_Aula", year,mes,dia);
 	if(mysql_query(conn,query)){
 		fprintf(stderr, "%s\n", mysql_error(conn));
-		printf("Fecha no encontrada");
+		printf("\tFecha no encontrada");
 		reservarAulas();
 	}
 	res = mysql_use_result(conn);
@@ -560,15 +783,28 @@ void consultaFecha(){
 	menuAdministrativo();
 }
 
+/*****Nombre***************************************
+ * consultaAula
+ *****Descripción**********************************
+ * Funcion encargada de obtener los datos para realizar
+ * la consulta por el nombre del aula de las reservaciones, hace
+ * el query de la consulta obtiene los datos y los muestra
+ * en pantalla.
+ *****Retorno**************************************
+ * N/A
+ *****Entradas*************************************
+ * N/A
+ **************************************************/
+
 void consultaAula(){
 	char nombreAula[10];
 	char query[1000];
-	printf("Digite el nombre del aula:");
+	printf("\tDigite el nombre del aula:");
 	scanf("%s",&nombreAula);
 	snprintf(query,1000,"SELECT Fecha,Hora_Inicio, Hora_Fin, Codigo_Reservacion, Anio, Periodo, Codigo_Curso, Grupo from Reservacion_de_Aulas WHERE Nombre_Aula = \'%s\' Order By Fecha asc, Hora_Inicio", nombreAula);
 	if(mysql_query(conn,query)){
 		fprintf(stderr, "%s\n", mysql_error(conn));
-		printf("Aula no encontrada");
+		printf("\tAula no encontrada");
 		reservarAulas();
 	}
 	res = mysql_use_result(conn);
@@ -578,6 +814,18 @@ void consultaAula(){
 	menuAdministrativo();
 }
 
+/*****Nombre***************************************
+ * consultaCurso
+ *****Descripción**********************************
+ * Funcion encargada de obtener los datos para realizar
+ * la consulta por el el curso por periode de las reservaciones, 
+ * hace el query de la consulta obtiene los datos y los muestra
+ * en pantalla.
+ *****Retorno**************************************
+ * N/A
+ *****Entradas*************************************
+ * N/A
+ **************************************************/
 
 void consultaCurso(){
 	int year;
@@ -600,7 +848,7 @@ void consultaCurso(){
 	snprintf(query,1000,"SELECT Codigo_Reservacion, Fecha, Hora_Inicio, Hora_Fin, Nombre_Aula from Reservacion_de_Aulas WHERE Año = \'%d\' AND Periodo = \'%d\' AND Codigo_Curso = \'%d\' AND Grupo = \'%d\' Order By Fecha, Hora_Inicio, Nombre_Aula", year,periodo,codigoCurso,grupo);
 	if(mysql_query(conn,query)){
 		fprintf(stderr, "%s\n", mysql_error(conn));
-		printf("Curso no encontrado");
+		printf("\tCurso no encontrado");
 		reservarAulas();
 	}else{
 		res = mysql_use_result(conn);
@@ -611,7 +859,6 @@ void consultaCurso(){
 		}
 		menuAdministrativo();
 	}
-	
 }
 
 
