@@ -1,4 +1,5 @@
 #include "BD.c"
+#include "header.h"
 
 /*****keys administrativos************************
  * Nombre del archivo: main.c
@@ -28,7 +29,7 @@
  **************************************************/
 
 void menuPrincipal(){
-	int opcion = opcion = (int)malloc(sizeof(int));
+	int opcion = 0;
 	conectarBaseDatos();
 	do{
 		printf("\t****Sistema de administracion de aulas**\n\t\t\tMenu Principal");
@@ -42,7 +43,7 @@ void menuPrincipal(){
 		}else if(opcion == 3){
 			break;
 		}
-	}while(opcion != 0);
+	}while(opcion != 3);
 }
 
 /*****Nombre***************************************
@@ -106,8 +107,11 @@ void menuAdministrativo(){
 		consultaAula();
 	}else if(opcion == 3){
 		consultaCurso();
+	}else if(opcion ==4){
+		return ;
 	}else{
-		menuPrincipal();
+		printf("La opcion indicada es invalida");
+		menuAdministrativo();
 	}
 }
 
@@ -209,4 +213,5 @@ void menuEstadisticas(){
 
 int main(){
 	menuPrincipal();
+	return 0;
 }
